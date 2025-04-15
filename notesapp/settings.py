@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-import os
+import os # Ensure os is imported
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,12 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&dzi#zsb(hz6p(s#anunt&#-a%ohr2hld71*i72*^exvw-yq$y'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-local-dev') # Read from env
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Read DEBUG from env, default to False. Convert string 'True' to boolean True.
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*'] # Consider restricting this in production
 
 
 # Application definition
@@ -46,10 +47,10 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware", # Whitenoise serves static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -88,14 +89,13 @@ WSGI_APPLICATION = 'notesapp.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv("DB_NAME"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("DB_PORT"),
+        'NAME': os.getenv("MYSQL_DATABASE"), # Use MYSQL_DATABASE from env
+        'USER': os.getenv("MYSQL_USER"),     # Use MYSQL_USER from env
+        'PASSWORD': os.getenv("MYSQL_PASSWORD"), # Use MYSQL_PASSWORD from env
+        'HOST': os.getenv("DB_HOST"),        # Use DB_HOST from env
+        'PORT': os.getenv("DB_PORT"),        # Use DB_PORT from env
     }
 }
 
@@ -135,18 +135,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles' # Directory where collectstatic will gather files
 
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'mynotes/build/static'
-# ]
+# Add this for Whitenoise storage (optional but recommended for efficiency)
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'mynotes/build/static')]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Add media files configuration if you plan to handle user uploads
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'mediafiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS settings (adjust as needed)
+CORS_ALLOW_ALL_ORIGINS = True # Or configure specific origins
