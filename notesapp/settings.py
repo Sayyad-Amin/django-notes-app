@@ -91,11 +91,11 @@ WSGI_APPLICATION = 'notesapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv("MYSQL_DATABASE"), # Use MYSQL_DATABASE from env
-        'USER': os.getenv("MYSQL_USER"),     # Use MYSQL_USER from env
-        'PASSWORD': os.getenv("MYSQL_PASSWORD"), # Use MYSQL_PASSWORD from env
-        'HOST': os.getenv("DB_HOST"),        # Use DB_HOST from env
-        'PORT': os.getenv("DB_PORT"),        # Use DB_PORT from env
+        'NAME': os.getenv("MYSQL_DATABASE", "notes_db"), # Use MYSQL_DATABASE from env
+        'USER': os.getenv("MYSQL_USER", "notes_user"),     # Use MYSQL_USER from env
+        'PASSWORD': os.getenv("MYSQL_PASSWORD", "notes_password"), # Use MYSQL_PASSWORD from env
+        'HOST': os.getenv("DB_HOST", "db"),        # Use DB_HOST from env
+        'PORT': os.getenv("DB_PORT", "3306"),        # Use DB_PORT from env
     }
 }
 

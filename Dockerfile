@@ -1,15 +1,13 @@
-FROM python:3.11
+FROM python:3.9-slim
 
 WORKDIR /app
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
 # Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
-    && apt-get clean \
+    build-essential \
+    pkg-config \
+    netcat-traditional \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
@@ -20,11 +18,11 @@ RUN pip install mysqlclient
 # Copy project files
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Make entrypoint script executable
+RUN chmod +x entrypoint.sh
 
-# Expose the port
+# Expose port
 EXPOSE 8000
 
-# Run the application
-CMD ["gunicorn", "notesapp.wsgi:application", "--bind", "0.0.0.0:8000"]
+# Use entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"]
