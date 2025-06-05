@@ -25,9 +25,7 @@ services:
 
   # Application tier
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: sayyad553/django-notes-app
     container_name: django_backend
     restart: always
     volumes:
